@@ -4,12 +4,14 @@ import { Input } from "@/components/ui/input";
 import Content from "./components/Content";
 import Error from "./components/Error";
 import { useEffect, useState } from "react";
+import Footer from "./components/Footer";
 
 function App() {
     const [searchValue, setSearchValue] = useState("");
+    const [phonetic, setphonetic] = useState("");
+    const [word, setWord] = useState("");
     const [datas, setDatas] = useState({}, []);
     const [statusCode, setStatusCode] = useState(true);
-    // let statusCode = 0;
 
     useEffect(() => {}, [setStatusCode]);
 
@@ -36,16 +38,17 @@ function App() {
                 if (statusCode) {
                     let defintions = resJson[0]["meanings"][0]["definitions"];
                     setDatas(defintions);
+                    setWord(resJson[0]["word"]);
+                    setphonetic(resJson[0]["phonetic"]);
                 } else {
                     setDatas(resJson);
-                    console.log(datas);
                 }
             });
     };
 
     return (
         <>
-            <div className="main min-h-screen ">
+            <div className="main min-h-full ">
                 <div className="container mx-auto">
                     <div className="flex w-full my-6  space-x-2 justify-center items-center">
                         <Input
@@ -64,12 +67,17 @@ function App() {
                         </Button>
                     </div>
                     {statusCode && Object.keys(datas).length !== 0 ? (
-                        <Content word={searchValue} datas={datas} />
+                        <Content
+                            word={word}
+                            datas={datas}
+                            phonetic={phonetic}
+                        />
                     ) : (
                         <Error error={datas["title"]} />
                     )}
                 </div>
             </div>
+            <Footer />
         </>
     );
 }
